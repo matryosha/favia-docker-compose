@@ -1,0 +1,70 @@
+services:
+  backend:
+    image: "matryoshka/favia-server"
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - favia-server.env
+    environment:
+      - UPLOAD_MEDIA_SERVICE_URL=http://media-upload:5001/
+  #    build:
+  #      context: ./backend
+  #    command: node --watch src/server.js
+  #    develop:
+  #      watch:
+  #        - action: sync
+  #          path: backend/src
+  #          target: /app/src/
+  #          ignore:
+  #            - node_modules/
+  #        - action: rebuild
+  #          path: backend/package.json
+  nominatim:
+    image: "matryoshka/favia-nominatim-4.4"
+    ports:
+      - "8888:8080"
+    restart: always
+  postgis:
+    image: "matryoshka/favia-postgis:inited"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/pgdata
+  listing-generator:
+    image: "matryoshka/favia-listing-generator"
+    ports:
+      - "8887:80"
+  tileserver:
+    image: "matryoshka/favia-tileserver-gl"
+    ports:
+      - "8877:8080"
+
+  media-upload:
+    image: "matryoshka/favia-media-upload-service"
+    restart: always
+    ports:
+      - "5001:5001"
+    volumes:
+      - media-db-data:/var/lib/postgresql/pgdata
+      - media-images:/tmp/favia-upload
+    env_file:
+      - favia-media-upload.env
+    environment:
+      - MEDIA_DB_HOST=media-upload-db
+      - MAIN_DB_HOST=postgis
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+  media-upload-db:
+    image: postgres
+    ports:
+      - "5434:5432"
+    env_file:
+      - favia-media-upload.env
+    environment:
+      - POSTGRES_USER=favia-media
+
+volumes:
+  db-data:
+  media-db-data:
+  media-images:
