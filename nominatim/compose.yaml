@@ -1,0 +1,41 @@
+services:
+  nominatim:
+    image: mediagis/nominatim:4.4
+    container_name: favia-nominatim-4.4
+
+    volumes:
+      - ./:/host
+
+    environment:
+      # TODO check agagin
+      # PostgreSQL tuning parameters for optimal performance
+      POSTGRES_SHARED_BUFFERS: 1GB
+      POSTGRES_MAINTAINENCE_WORK_MEM: 1GB
+      POSTGRES_AUTOVACUUM_WORK_MEM: 1GB
+      POSTGRES_WORK_MEM: 50MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 1GB
+      POSTGRES_SYNCHRONOUS_COMMIT: "off"
+      POSTGRES_MAX_WAL_SIZE: 1GB
+      POSTGRES_CHECKPOINT_TIMEOUT: 10min
+      POSTGRES_CHECKPOINT_COMPLETITION_TARGET: 0.9
+
+      PBF_PATH: /host/czech-republic-latest.osm.pbf
+
+      # Mode for applying updates: continuous/once/catch-up/none
+      UPDATE_MODE: none
+
+      # Option to import additional Wikipedia data
+      IMPORT_WIKIPEDIA: true
+      
+      # Option to disable updates to save space
+      FREEZE: true
+
+      # Import style options: admin/street/address/full/extratags
+      IMPORT_STYLE: address
+
+      # Password for the Nominatim database
+      NOMINATIM_PASSWORD: supersafepassword
+
+    # Map the container's port to the host's port
+    ports:
+      - "8777:8080"
