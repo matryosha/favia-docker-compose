@@ -1,4 +1,10 @@
 services:
+  nuxt-app:
+    image: "matryoshka/favia-nuxt"
+    restart: always
+    ports:
+      - "3000:3000"
+
   backend:
     image: "matryoshka/favia-server:nuxt-legacy"
     restart: always
