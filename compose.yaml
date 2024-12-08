@@ -1,6 +1,6 @@
 services:
   backend:
-    image: "matryoshka/favia-server"
+    image: "matryoshka/favia-server:nuxt-legacy"
     restart: always
     ports:
       - "5000:5000"
@@ -10,30 +10,30 @@ services:
       - UPLOAD_MEDIA_SERVICE_URL=http://media-upload:5001/
 
   nominatim:
-    image: "matryoshka/favia-nominatim-4.4"
+    image: "matryoshka/favia-nominatim-4.4:nuxt-legacy"
     ports:
       - "8888:8080"
     restart: always
 
   postgis:
-    image: "matryoshka/favia-postgis:inited"
+    image: "matryoshka/favia-postgis:nuxt-legacy"
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/pgdata
 
   listing-generator:
-    image: "matryoshka/favia-listing-generator"
+    image: "matryoshka/favia-listing-generator:nuxt-legacy"
     ports:
       - "8887:80"
 
   tileserver:
-    image: "matryoshka/favia-tileserver-gl"
+    image: "matryoshka/favia-tileserver-gl:nuxt-legacy"
     ports:
       - "8877:8080"
 
   media-upload:
-    image: "matryoshka/favia-media-upload-service"
+    image: "matryoshka/favia-media-upload-service:nuxt-legacy"
     restart: always
     ports:
       - "5001:5001"
